@@ -1,6 +1,12 @@
 # read toilet dimension for free
 
-a free, mobile-first reader for the Toilet Dimension comic. hand-drawn in notebooks, scanned and posted arc by arc, free to read for everyone.
+a free repo for reading the Toilet Dimension comic. hand-drawn in notebooks, scanned and posted arc by arc, free to read for everyone.
+
+this is just a repo, not a website. there is no reader app here, only the page images.
+
+## how to read
+
+the pages are image files, so you need to download them before reading them. open an arc folder, tap a page, download it, then open it in your gallery. read the pages in order (Page 1, Page 2, Page 3 and so on).
 
 ## the story so far
 
@@ -17,12 +23,6 @@ a cursed toilet with two buttons, L and R. click R and you get pulled into anoth
 
 ## status
 
-work in progress. the notebook pages are being scanned and turned into a swipe-through reader with a rating button for each arc.
-
-## planned
-
-- swipe reader, mobile first
-- rating button per arc
-- deploy on vercel
+work in progress. the notebook pages are being scanned and uploaded arc by arc.
 
 made by Keane
