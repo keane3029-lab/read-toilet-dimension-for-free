@@ -19,7 +19,9 @@ a cursed toilet with two buttons, L and R. click R and you get pulled into anoth
 - Arc 3: 100,000,000 toilets show up in homes and the city goes silent
 - Arc 4: The No Fandom Dimension
 - Arc 5: the nuke, the black market and the courtroom
-- Arc 6: coming next, the No Fandom Dimension returns
+- Arc 6: The No Fandom Dimension comes back, Zone 2 appears, and keanenews.com shows up as fake news
+- Arc 7: More Dimensions, a melting figure, and a letter asking what you saw in the dimension
+- Arc 8: started, more dimensions are on the way
 
 ## status
 
