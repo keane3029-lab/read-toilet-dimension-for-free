@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TD - Toilet Dimension</title>
+<style>
+  :root { --bg:#f7f5f0; --fg:#1d1d1d; --muted:#777; --accent:#c2185b; --card:#ffffff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#121212; --fg:#eeeeee; --muted:#999; --card:#1e1e1e; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: system-ui, -apple-system, sans-serif; background:var(--bg); color:var(--fg); }
+  header { padding:16px; text-align:center; border-bottom:1px solid #8884; }
+  header h1 { margin:0; font-size:1.4rem; }
+  header p { margin:4px 0 0; color:var(--muted); font-size:.9rem; }
+  main { max-width:720px; margin:0 auto; padding:16px; }
+  .arcs { list-style:none; padding:0; margin:0; }
+  .arcs li { margin:8px 0; }
+  .arcs button { width:100%; text-align:left; padding:14px; border:0; border-radius:10px; background:var(--card); color:var(--fg); font-size:1rem; cursor:pointer; }
+  .arcs small { display:block; color:var(--muted); margin-top:4px; }
+  .nav { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .nav button { padding:10px 14px; border:0; border-radius:8px; background:var(--accent); color:#fff; font-size:1rem; cursor:pointer; }
+  .nav button:disabled { opacity:.3; cursor:default; }
+  .counter { color:var(--muted); font-size:.9rem; text-align:center; }
+  .page { width:100%; height:auto; display:block; border-radius:6px; background:#fff; margin:12px 0; }
+  .missing { padding:40px 12px; text-align:center; color:var(--muted); border:1px dashed var(--muted); border-radius:6px; margin:12px 0; }
+  .hidden { display:none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TD (Toilet Dimension)</h1>
+  <p>read it for free</p>
+</header>
+
+<main>
+  <section id="index">
+    <ul class="arcs" id="arcList"></ul>
+  </section>
+
+  <section id="reader" class="hidden">
+    <div class="nav">
+      <button id="back">← arcs</button>
+      <span id="title" class="counter"></span>
+    </div>
+    <div id="pageWrap"></div>
+    <div class="nav">
+      <button id="prev">prev</button>
+      <span class="counter" id="counter"></span>
+      <button id="next">next</button>
+    </div>
+  </section>
+</main>
+
+<script>
+  // helper: arc("Arc 4", "arc4", [1, 2, "end"]) -> pages/arc4-1.jpg, pages/arc4-2.jpg, pages/arc4-end.jpg
+  const arc = (title, prefix, names, sub = "") => ({
+    title,
+    sub,
+    files: names.map(n => `pages/${prefix}-${n}.jpg`),
+  });
+
+  const ARCS = [
+    arc("Arc 1", "arc1", [1, 2, 3, "end"]),
+    arc("Arc 2", "arc2", [1, 2, 3, "end"]),
+    arc("Arc 3", "arc3", [1, 2, 3, "end"]),
+    arc("Arc 4: The No Fandom Dimension", "arc4", [1, 2, 3, 4, 5, 6], "drawn Oct 7 2026"),
+    arc("Arc 5", "arc5", [1, 2, 3, "end"], "drawn Oct 15 2026"),
+    arc("Arc 6", "arc6", ["whole"]),
+    arc("Arc 7: More dimensions", "arc7", ["whole"]),
+  ];
+
+  const $ = id => document.getElementById(id);
+  let arcIdx = 0, pageIdx = 0, pages = [];
+
+  function buildIndex() {
+    const list = $("arcList");
+    ARCS.forEach((a, i) => {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      const n = a.files.length;
+      const label = `${n} ${n === 1 ? "page" : "pages"}`;
+      btn.innerHTML = `${a.title}<small>${a.sub ? a.sub + " · " : ""}${label}</small>`;
+      btn.onclick = () => openArc(i);
+      li.appendChild(btn);
+      list.appendChild(li);
+    });
+  }
+
+  function openArc(i) {
+    arcIdx = i;
+    pageIdx = 0;
+    pages = ARCS[i].files;
+    $("index").classList.add("hidden");
+    $("reader").classList.remove("hidden");
+    window.scrollTo(0, 0);
+    render();
+  }
+
+  function showIndex() {
+    $("reader").classList.add("hidden");
+    $("index").classList.remove("hidden");
+    window.scrollTo(0, 0);
+  }
+
+  function render() {
+    const a = ARCS[arcIdx];
+    const src = pages[pageIdx];
+    $("title").textContent = a.title;
+    $("counter").textContent = `${pageIdx + 1} / ${pages.length}`;
+    $("prev").disabled = pageIdx === 0 && arcIdx === 0;
+    $("next").disabled = pageIdx === pages.length - 1 && arcIdx === ARCS.length - 1;
+    $("prev").textContent = pageIdx === 0 ? "prev arc" : "prev";
+    $("next").textContent = pageIdx === pages.length - 1 ? "next arc" : "next";
+
+    const wrap = $("pageWrap");
+    wrap.innerHTML = "";
+    const img = document.createElement("img");
+    img.className = "page";
+    img.alt = `${a.title}, page ${pageIdx + 1}`;
+    img.src = src;
+    img.onerror = () => {
+      wrap.innerHTML = `<div class="missing">missing file: ${src}</div>`;
+    };
+    wrap.appendChild(img);
+    window.scrollTo(0, 0);
+  }
+
+  function nextPage() {
+    if (pageIdx < pages.length - 1) {
+      pageIdx++;
+      render();
+    } else if (arcIdx < ARCS.length - 1) {
+      openArc(arcIdx + 1);
+    }
+  }
+
+  function prevPage() {
+    if (pageIdx > 0) {
+      pageIdx--;
+      render();
+    } else if (arcIdx > 0) {
+      openArc(arcIdx - 1);
+      pageIdx = pages.length - 1;
+      render();
+    }
+  }
+
+  $("next").onclick = nextPage;
+  $("prev").onclick = prevPage;
+  $("back").onclick = showIndex;
+
+  document.addEventListener("keydown", e => {
+    if ($("reader").classList.contains("hidden")) return;
+    if (e.key === "ArrowRight") nextPage();
+    if (e.key === "ArrowLeft") prevPage();
+    if (e.key === "Escape") showIndex();
+  });
+
+  // swipe support for phone
+  let touchX = null;
+  $("pageWrap").addEventListener("touchstart", e => { touchX = e.touches[0].clientX; }, { passive: true });
+  $("pageWrap").addEventListener("touchend", e => {
+    if (touchX === null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 50) dx < 0 ? nextPage() : prevPage();
+    touchX = null;
+  });
+
+  buildIndex();
+</script>
+</body>
+</html>
